@@ -33,40 +33,70 @@ And everything runs locally. No cloud, no API keys, no uploads.
 
 ## Requirements
 
-- Python **3.10+**
-- **ffmpeg** and **ffprobe** on `PATH` (a build with `libass`, e.g. the [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) full build)
-- A faster-whisper model. Either a local CTranslate2 model folder, or a model name that faster-whisper can download (`large-v3-turbo` recommended)
-- CPU is enough; a CUDA GPU is not required
+- Python **3.9+**
+- **ffmpeg** and **ffprobe**. On Windows the launcher downloads a static build automatically; on Linux/macOS install it with your package manager.
+- Free disk space: ~500 MB for Python dependencies, ~110 MB for ffmpeg (Windows), ~1.6 GB for the speech model.
+- Internet access **on the first run only**.
+- CPU is enough; a GPU is not required.
 
-## Setup
-
-### Windows
-
-```bat
-git clone https://github.com/alimc98/Atlansub.git
-cd Atlansub
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-set WHISPER_MODEL=F:\whisper-models\large-v3-turbo-local
-python -m app.server
-```
-
-Or simply edit the paths inside `run.bat` and double-click it. The launcher opens the browser at `http://127.0.0.1:7861`.
-
-### Linux / macOS
+## Quick start
 
 ```bash
 git clone https://github.com/alimc98/Atlansub.git
 cd Atlansub
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-export WHISPER_MODEL=/path/to/large-v3-turbo-local
+```
+
+### Windows — one click
+
+Double-click **`run.bat`**. On the first run it does everything:
+
+1. creates `.venv` and installs the Python dependencies,
+2. downloads a static ffmpeg build into `tools\ffmpeg` if ffmpeg is not on `PATH`,
+3. downloads the `large-v3-turbo` speech model (~1.6 GB) into `models\large-v3-turbo`,
+4. starts the server and opens `http://127.0.0.1:7861`.
+
+The next runs skip the finished steps and start in a few seconds. No path needs to be edited, and the project can live on any drive.
+
+### Linux / macOS — one command
+
+```bash
+chmod +x run.sh
 ./run.sh
 ```
 
-If `WHISPER_MODEL` is not set, Atlansub looks for `models/large-v3-turbo-local`, `models/large-v3-turbo`, and then a common local path. The model is loaded lazily on the first job.
+`run.sh` creates the virtual environment, installs the dependencies, downloads the model on first run, and starts the server. Install ffmpeg first:
+
+```bash
+sudo apt install ffmpeg     # Debian / Ubuntu
+sudo dnf install ffmpeg     # Fedora
+brew install ffmpeg         # macOS
+```
+
+### Manual setup (any OS)
+
+```bash
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python -m app.setup                # downloads ffmpeg (Windows) and the model
+python -m app.server
+```
+
+`python -m app.setup` is safe to re-run: it only downloads what is missing.
+
+### Using your own model
+
+`WHISPER_MODEL` can point to a local CTranslate2 folder or to any faster-whisper model name:
+
+```bat
+set WHISPER_MODEL=D:\models\large-v3-turbo-local
+```
+
+```bash
+export WHISPER_MODEL=/home/me/models/large-v3-turbo-local
+```
+
+If it is unset, Atlansub uses `models/large-v3-turbo` inside the project. No absolute path is required anywhere.
 
 ## Usage
 
@@ -94,7 +124,7 @@ If `WHISPER_MODEL` is not set, Atlansub looks for `models/large-v3-turbo-local`,
 
 | Variable | Default | Description |
 |---|---|---|
-| `WHISPER_MODEL` | auto-detected | Local model folder or a faster-whisper model name |
+| `WHISPER_MODEL` | `models/large-v3-turbo` | Local model folder or a faster-whisper model name |
 | `WHISPER_LABEL` | folder name | Label shown in the UI |
 | `SUBS_HOST` | `127.0.0.1` | Bind address |
 | `SUBS_PORT` | `7861` | First port to try (auto-increments if busy) |
@@ -135,13 +165,22 @@ Atlansub/
     pipeline.py    probing, transcription, cue building, overlay rendering
     srt_utils.py   SRT parsing/writing, Persian normalization, Premiere shaping
     ass_gen.py     ASS generation for the overlay
+    setup.py       first-run setup: ffmpeg + speech model download
     static/        RTL web UI (HTML/CSS/JS)
     fonts/         Vazirmatn (SIL OFL 1.1)
   jobs/            runtime projects (git-ignored)
-  run.bat          Windows launcher
+  models/          downloaded speech model (git-ignored)
+  tools/           downloaded ffmpeg on Windows (git-ignored)
+  run.bat          Windows one-click launcher
   run.sh           Linux/macOS launcher
   requirements.txt
 ```
+
+## Latest release
+
+Download the source archive from
+[github.com/alimc98/Atlansub/releases/latest](https://github.com/alimc98/Atlansub/releases/latest),
+extract it anywhere, and run `run.bat` (Windows) or `run.sh` (Linux/macOS). Everything else is downloaded on the first run.
 
 ## Credits
 

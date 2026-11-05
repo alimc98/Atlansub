@@ -9,6 +9,7 @@ env/
 # ---- App runtime ----
 jobs/
 models/
+tools/
 audio16k.wav
 *.log
 
