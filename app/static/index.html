@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlansub — زیرنویس‌ساز فارسی</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230b1220'/%3E%3Crect x='4.5' y='6' width='15' height='12' rx='2.5' fill='none' stroke='%2334d399' stroke-width='1.6'/%3E%3Cpath d='M7.5 10h6M7.5 13.5h9M7.5 16.5h4' stroke='%2334d399' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <header class="hero">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2.5" y="4.5" width="19" height="15" rx="3"></rect>
+          <path d="M6.5 10h5M6.5 13.5h9M6.5 17h4"></path>
+          <path d="M16.5 8.5v4"></path>
+        </svg>
+      </div>
+      <div>
+        <div class="badge"><span class="dot"></span> Atlansub · کاملاً آفلاین</div>
+        <h1>زیرنویس فارسی، آماده‌ی پریمیر</h1>
+        <p class="lede">ویدیو را بکشید و رها کنید. گفتار فارسی رونویسی می‌شود، تایم‌کد می‌گیرد و خروجی‌های آماده برای پلیر و پریمیر ساخته می‌شود.</p>
+      </div>
+    </header>
+
+    <section class="card drop-card" id="dropCard">
+      <div class="drop-zone" id="dropzone" tabindex="0" role="button" aria-label="انتخاب فایل ویدیو">
+        <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"></path>
+          <path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"></path>
+        </svg>
+        <div class="drop-title">ویدیو یا فایل صوتی را اینجا رها کنید</div>
+        <div class="drop-sub">یا برای انتخاب کلیک کنید — MP4، MOV، MKV، MP3 و…</div>
+        <input type="file" id="fileInput" accept="video/*,audio/*,.mkv,.ts,.flv,.wmv,.m4v" hidden>
+      </div>
+
+      <div class="file-row" id="fileRow" hidden>
+        <div class="file-thumb" id="fileThumb"></div>
+        <div class="file-meta">
+          <div class="file-name" id="fileName"></div>
+          <div class="file-sub" id="fileSub"></div>
+        </div>
+        <button class="icon-btn" id="clearFile" type="button" title="حذف انتخاب">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="card options">
+      <div class="row">
+        <div class="row-label">
+          <span class="row-title">دقت رونویسی</span>
+          <span class="row-hint">حالت دقیق کندتر است ولی خطاهای کمتری دارد.</span>
+        </div>
+        <div class="segmented" id="qualitySeg" role="group" aria-label="دقت رونویسی">
+          <button type="button" data-value="accurate" class="active">دقیق</button>
+          <button type="button" data-value="fast">سریع</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row-label">
+          <span class="row-title">زبان گفتار</span>
+          <span class="row-hint">برای ویدیوهای فارسی روی «فارسی» بماند.</span>
+        </div>
+        <select class="select" id="language">
+          <option value="fa" selected>فارسی</option>
+          <option value="auto">تشخیص خودکار</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="row-label">
+          <span class="row-title">فایل SRT آماده‌ی پریمیر</span>
+          <span class="row-hint">متن از پیش شکل‌گرفته تا پریمیر حروف را به‌هم نریزد.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="optPremiere" checked>
+          <span class="track"><span class="knob"></span></span>
+        </label>
+      </div>
+
+      <div class="row">
+        <div class="row-label">
+          <span class="row-title">لایه‌ی شفاف زیرنویس (ProRes 4444)</span>
+          <span class="row-hint">برای انداختن روی تایم‌لاین؛ رندر آن چند دقیقه طول می‌کشد.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="optOverlay">
+          <span class="track"><span class="knob"></span></span>
+        </label>
+      </div>
+
+      <div class="row sub-row" id="overlayScaleRow" hidden>
+        <div class="row-label">
+          <span class="row-title">اندازه‌ی لایه</span>
+          <span class="row-hint">هم‌اندازه‌ی ویدیو بهترین کیفیت را دارد.</span>
+        </div>
+        <select class="select" id="overlayScale">
+          <option value="native" selected>هم‌اندازه‌ی ویدیو</option>
+          <option value="1080">۱۰۸۰p</option>
+          <option value="720">۷۲۰p</option>
+        </select>
+      </div>
+    </section>
+
+    <button class="primary" id="startBtn" disabled>
+      <span>شروع ساخت زیرنویس</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h13m0 0l-5-5m5 5l-5 5"/></svg>
+    </button>
+
+    <section class="card progress-card" id="progressCard" hidden>
+      <div class="progress-head">
+        <div class="progress-stage" id="stageText">آماده‌سازی…</div>
+        <div class="progress-pct" id="pctText">۰٪</div>
+      </div>
+      <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+      <div class="progress-foot">
+        <span class="elapsed" id="elapsed">۰ ثانیه</span>
+        <button class="ghost small" id="cancelBtn" type="button">لغو</button>
+      </div>
+      <div class="error-box" id="errorBox" hidden></div>
+      <details class="logs" id="logBox">
+        <summary>گزارش پردازش</summary>
+        <pre id="logText"></pre>
+      </details>
+    </section>
+
+    <section class="card result-card" id="resultCard" hidden>
+      <div class="result-head">
+        <div>
+          <h2>خروجی‌ها آماده است</h2>
+          <p class="row-hint" id="resultSub"></p>
+        </div>
+        <span class="ok-badge">✓</span>
+      </div>
+      <div class="files" id="files"></div>
+      <div class="result-actions">
+        <button class="ghost" id="newJobBtn" type="button">ویدیوی جدید</button>
+        <button class="ghost danger" id="deleteJobBtn" type="button">پاک کردن فایل‌ها</button>
+      </div>
+    </section>
+
+    <section class="card editor-card" id="editorCard" hidden>
+      <div class="result-head">
+        <div>
+          <h2>ویرایش زیرنویس</h2>
+          <p class="row-hint">متن هر کیو را اصلاح کنید؛ زمان‌ها دست‌نخورده می‌مانند.</p>
+        </div>
+        <span class="chip" id="cueCount"></span>
+      </div>
+      <div class="cue-list" id="cueList"></div>
+      <div class="result-actions">
+        <button class="primary small" id="saveSrtBtn" type="button">ذخیره و بازسازی SRT</button>
+        <button class="ghost small" id="rebuildOverlayBtn" type="button" hidden>بازسازی لایه‌ی شفاف</button>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>Atlansub</span>
+      <span class="sep">·</span>
+      <span id="modelInfo">مدل: —</span>
+      <span class="sep">·</span>
+      <span>همه‌ی پردازش روی همین سیستم انجام می‌شود</span>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
